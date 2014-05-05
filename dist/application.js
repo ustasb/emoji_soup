@@ -7,11 +7,13 @@
   window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
   window.App = (function() {
-    var ATTRACT_EFFECT, BUMP_EFFECT;
+    var ATTRACT_EFFECT, BUMP_EFFECT, HALT;
 
     ATTRACT_EFFECT = 0.05;
 
     BUMP_EFFECT = -0.5;
+
+    HALT = false;
 
     function App() {
       var _this = this;
@@ -61,35 +63,22 @@
         min: 0,
         max: 400,
         slide: function(e, ui) {
-          return Ball.ATTRACT_DISTANCE = ui.value;
+          Ball.ATTRACT_DISTANCE = ui.value;
+          return Ball.ATTRACT_STRENGTH = 0.0003 * ui.value / 90;
         }
       });
-      $('#attract-strength .slider').slider({
-        value: Ball.ATTRACT_STRENGTH,
-        min: 0,
-        step: 0.00001,
-        max: 0.001,
+      $('#speed .slider').slider({
+        value: Ball.DAMPEN,
+        min: 0.95,
+        step: 0.01,
+        max: 1.05,
         slide: function(e, ui) {
-          return Ball.ATTRACT_STRENGTH = ui.value;
+          return Ball.DAMPEN = ui.value;
         }
       });
-      $('#attract-effect-emotion .slider').slider({
-        value: ATTRACT_EFFECT,
-        min: 0,
-        step: 0.05,
-        max: 0.3,
-        slide: function(e, ui) {
-          return ATTRACT_EFFECT = ui.value;
-        }
-      });
-      return $('#bump-effect-emotion .slider').slider({
-        value: Math.abs(BUMP_EFFECT),
-        min: 0,
-        step: 0.02,
-        max: 2,
-        slide: function(e, ui) {
-          return BUMP_EFFECT = -ui.value;
-        }
+      return $('#halt input').click(function() {
+        HALT = $(this).is(':checked');
+        return null;
       });
     };
 
@@ -122,11 +111,13 @@
         while (true) {
           a = this.emoji[i];
           a.emotion.neutralize();
-          a.move();
+          if (!HALT) {
+            a.move();
+          }
           j = i + 1;
           while (j < len) {
             b = this.emoji[j];
-            if (a.checkCollision(b)) {
+            if (!HALT && a.checkCollision(b)) {
               a.emotion.update(BUMP_EFFECT);
               b.emotion.update(BUMP_EFFECT);
             } else {
@@ -140,7 +131,9 @@
             }
             j += 1;
           }
-          a.checkBoundary(this.canvas.el.width, this.canvas.el.height);
+          if (!HALT) {
+            a.checkBoundary(this.canvas.el.width, this.canvas.el.height);
+          }
           a.render(this.canvas.ctx);
           i += 1;
           if (i > lenMinus1) {
@@ -164,6 +157,8 @@
 
     Ball.BOUNCE_FRICTION = -0.9;
 
+    Ball.DAMPEN = 1;
+
     function Ball(x, y, vx, vy, radius) {
       this.x = x;
       this.y = y;
@@ -174,6 +169,8 @@
     }
 
     Ball.prototype.move = function() {
+      this.vx *= Ball.DAMPEN;
+      this.vy *= Ball.DAMPEN;
       this.x += this.vx;
       return this.y += this.vy;
     };

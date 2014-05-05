@@ -3,11 +3,15 @@ class Ball
   @ATTRACT_DISTANCE: 90
   @ATTRACT_STRENGTH: 0.0003
   @BOUNCE_FRICTION: -0.9
+  @DAMPEN: 1
 
   constructor: (@x, @y, @vx, @vy, @radius = 10) ->
     @mass = @radius / 10
 
   move: ->
+    @vx *= Ball.DAMPEN
+    @vy *= Ball.DAMPEN
+
     @x += @vx
     @y += @vy
 

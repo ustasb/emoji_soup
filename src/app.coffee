@@ -7,6 +7,7 @@ class window.App
 
   ATTRACT_EFFECT = 0.05
   BUMP_EFFECT = -0.5
+  HALT = false
 
   constructor: ->
     @lightBox = new LightBox('main-menu')
@@ -47,32 +48,22 @@ class window.App
       value: Ball.ATTRACT_DISTANCE
       min: 0
       max: 400
-      slide: (e, ui) -> Ball.ATTRACT_DISTANCE = ui.value
+      slide: (e, ui) ->
+        Ball.ATTRACT_DISTANCE = ui.value
+        Ball.ATTRACT_STRENGTH = 0.0003 * ui.value / 90
     )
 
-    $('#attract-strength .slider').slider(
-      value: Ball.ATTRACT_STRENGTH
-      min: 0
-      step: 0.00001
-      max: 0.001
-      slide: (e, ui) -> Ball.ATTRACT_STRENGTH = ui.value
+    $('#speed .slider').slider(
+      value: Ball.DAMPEN
+      min: 0.95
+      step: 0.01
+      max: 1.05
+      slide: (e, ui) -> Ball.DAMPEN = ui.value
     )
 
-    $('#attract-effect-emotion .slider').slider(
-      value: ATTRACT_EFFECT
-      min: 0
-      step: 0.05
-      max: 0.3
-      slide: (e, ui) -> ATTRACT_EFFECT = ui.value
-    )
-
-    $('#bump-effect-emotion .slider').slider(
-      value: Math.abs(BUMP_EFFECT)
-      min: 0
-      step: 0.02
-      max: 2
-      slide: (e, ui) -> BUMP_EFFECT = -ui.value
-    )
+    $('#halt input').click ->
+      HALT = $(this).is(':checked')
+      null
 
   createEmojiAt: (x, y) ->
     maxVelocity = 4
@@ -102,13 +93,13 @@ class window.App
     if len > 0 then loop
       a = @emoji[i]
       a.emotion.neutralize()
-      a.move()
+      a.move() unless HALT
 
       j = i + 1
       while j < len
         b = @emoji[j]
 
-        if a.checkCollision(b)
+        if !HALT and a.checkCollision(b)
           a.emotion.update(BUMP_EFFECT)
           b.emotion.update(BUMP_EFFECT)
         else
@@ -120,7 +111,7 @@ class window.App
 
         j += 1
 
-      a.checkBoundary(@canvas.el.width, @canvas.el.height)
+      a.checkBoundary(@canvas.el.width, @canvas.el.height) unless HALT
       a.render(@canvas.ctx)
 
       i += 1
