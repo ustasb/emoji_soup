@@ -17,6 +17,7 @@ Brian Ustas
     - Emoji become less happy when bumping into others
     - When together, Emoji become more happy
     - If alone, Emoji gravitate towards a neutral state
+    - Food makes Emoji grow
 
   It's interesting to see the groups that form! Crowded spaces create unhappy
   Emoji.

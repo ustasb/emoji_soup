@@ -5,19 +5,25 @@ window.requestAnimationFrame = window.requestAnimationFrame ||
 
 class window.App
 
+  ACTIVE_EMOJI_CLASS = null
+  ACTIVE_CONTAINER = null
+
   ATTRACT_EFFECT = 0.05
   BUMP_EFFECT = -0.5
+  GROWTH_RATE = 0.2
   HALT = false
 
   constructor: ->
     @lightBox = new LightBox('main-menu')
 
     @canvas = new Canvas('canvas')
-    @emoji = []
     @mouse =
       isDown: false
       x: null
       y: null
+
+    @emotionals = []
+    @food = []
 
     @_initEvents()
     Emoji.loadSpriteSheet => @run()
@@ -44,30 +50,45 @@ class window.App
   _enableSettings: ->
     $('#settings').show()
 
-    $('#attract-distance .slider').slider(
+    $('#attract-distance .slider').slider
       value: Ball.ATTRACT_DISTANCE
       min: 0
       max: 400
       slide: (e, ui) ->
         Ball.ATTRACT_DISTANCE = ui.value
         Ball.ATTRACT_STRENGTH = 0.0003 * ui.value / 90
-    )
 
-    $('#speed .slider').slider(
+    $('#speed .slider').slider
       value: Ball.DAMPEN
       min: 0.95
       step: 0.01
       max: 1.05
       slide: (e, ui) -> Ball.DAMPEN = ui.value
-    )
 
     $('#halt input').click ->
       HALT = $(this).is(':checked')
       null
 
-  createEmojiAt: (x, y) ->
+    toggleActive = do ->
+      active = null
+      (el) ->
+        active.removeClass('active') if active?
+        active = $(el).addClass('active')
+
+    $('#emotional').click (e) =>
+      toggleActive(e.currentTarget)
+      ACTIVE_EMOJI_CLASS = Emotional
+      ACTIVE_CONTAINER = @emotionals
+    .click()
+
+    $('#food').click (e) =>
+      toggleActive(e.currentTarget)
+      ACTIVE_EMOJI_CLASS = Food
+      ACTIVE_CONTAINER = @food
+
+  createEmojiAt: (emojiClass, container, x, y) ->
     maxVelocity = 4
-    @emoji.push new Emoji(
+    container.push new emojiClass(
       x, y,
       Math.random() * maxVelocity - (maxVelocity / 2),
       Math.random() * maxVelocity - (maxVelocity / 2)
@@ -81,23 +102,19 @@ class window.App
     @canvas.ctx.stroke()
     @canvas.ctx.closePath()
 
-  run: ->
-    @canvas.clear()
-
-    @createEmojiAt(@mouse.x, @mouse.y) if @mouse.isDown
-
+  updateEmotionals: ->
     i = 0
-    len = @emoji.length
+    len = @emotionals.length
     lenMinus1 = len - 1
 
     if len > 0 then loop
-      a = @emoji[i]
+      a = @emotionals[i]
       a.emotion.neutralize()
       a.move() unless HALT
 
       j = i + 1
       while j < len
-        b = @emoji[j]
+        b = @emotionals[j]
 
         if !HALT and a.checkCollision(b)
           a.emotion.update(BUMP_EFFECT)
@@ -111,10 +128,36 @@ class window.App
 
         j += 1
 
-      a.checkBoundary(@canvas.el.width, @canvas.el.height) unless HALT
+      a.checkBoundary(@canvas.el.width, @canvas.el.height)
       a.render(@canvas.ctx)
 
       i += 1
       break if i > lenMinus1
+
+  updateFood: ->
+    i = @food.length
+
+    while i > 0
+      i -= 1
+
+      f = @food[i]
+      f.move() unless HALT
+
+      for e in @emotionals by 1
+        if f.hasCollided(e)
+          e.makeBigger(GROWTH_RATE)
+          @food.splice(i, 1)
+
+      f.checkBoundary(@canvas.el.width, @canvas.el.height)
+      f.render(@canvas.ctx)
+
+  run: ->
+    @canvas.clear()
+
+    if @mouse.isDown
+      @createEmojiAt(ACTIVE_EMOJI_CLASS, ACTIVE_CONTAINER, @mouse.x, @mouse.y)
+
+    @updateEmotionals()
+    @updateFood()
 
     requestAnimationFrame => @run()

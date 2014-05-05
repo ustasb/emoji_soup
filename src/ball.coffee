@@ -8,6 +8,10 @@ class Ball
   constructor: (@x, @y, @vx, @vy, @radius = 10) ->
     @mass = @radius / 10
 
+  _rotate: (x, y, cos, sin, reverse) ->
+    x: if reverse then (x * cos + y * sin) else (x * cos - y * sin)
+    y: if reverse then (y * cos - x * sin) else (y * cos + x * sin)
+
   move: ->
     @vx *= Ball.DAMPEN
     @vy *= Ball.DAMPEN
@@ -30,9 +34,15 @@ class Ball
       @y = farY - @radius
       @vy *= Ball.BOUNCE_FRICTION
 
-  rotate: (x, y, cos, sin, reverse) ->
-    x: if reverse then (x * cos + y * sin) else (x * cos - y * sin)
-    y: if reverse then (y * cos - x * sin) else (y * cos + x * sin)
+  makeBigger: (radiusIncrease) ->
+    @radius += radiusIncrease
+    @mass = @radius / 10
+
+  hasCollided: (other) ->
+    dx = other.x - @x
+    dy = other.y - @y
+    dist = Math.sqrt(dx * dx + dy * dy)
+    return dist < @radius + other.radius
 
   # HTML5 Animation with JavaScript
   checkCollision: (other) ->
@@ -47,11 +57,11 @@ class Ball
 
     # Rotate positions
     p0 = x: 0, y: 0
-    p1 = @rotate(dx, dy, cos, sin, true)
+    p1 = @_rotate(dx, dy, cos, sin, true)
 
     # Rotate velocities
-    v0 = @rotate(@vx, @vy, cos, sin, true)
-    v1 = @rotate(other.vx, other.vy, cos, sin, true)
+    v0 = @_rotate(@vx, @vy, cos, sin, true)
+    v1 = @_rotate(other.vx, other.vy, cos, sin, true)
 
     # Conservation of momentum
     vxReaction = v0.x - v1.x
@@ -65,16 +75,16 @@ class Ball
     p1.x += v1.x / absV * overlap
 
     # Rotate positions back
-    p0F = @rotate(p0.x, p0.y, cos, sin, false)
-    p1F = @rotate(p1.x, p1.y, cos, sin, false)
+    p0F = @_rotate(p0.x, p0.y, cos, sin, false)
+    p1F = @_rotate(p1.x, p1.y, cos, sin, false)
     other.x = @x + p1F.x
     other.y = @y + p1F.y
     @x = @x + p0F.x
     @y = @y + p0F.y
 
     # Rotate velocities back
-    v0F = @rotate(v0.x, v0.y, cos, sin, false)
-    v1F = @rotate(v1.x, v1.y, cos, sin, false)
+    v0F = @_rotate(v0.x, v0.y, cos, sin, false)
+    v1F = @_rotate(v1.x, v1.y, cos, sin, false)
     @vx = v0F.x
     @vy = v0F.y
     other.vx = v1F.x
