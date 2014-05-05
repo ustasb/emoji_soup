@@ -1,0 +1,87 @@
+html, body {
+  overflow: hidden;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300; }
+
+a:focus {
+  outline: 0;
+  /*removes the dotted border*/ }
+
+canvas {
+  cursor: crosshair; }
+
+h1 {
+  font-family: 'Handlee', cursive;
+  margin: 10px 0;
+  padding: 0; }
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  margin-left: 15px;
+  padding: 0; }
+
+.light-box-bg {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.6; }
+
+.light-box {
+  z-index: 2;
+  position: absolute; }
+
+.container, #main-menu, #settings {
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -khtml-border-radius: 10px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 2px solid black; }
+
+#main-menu {
+  width: 410px;
+  padding: 10px 20px; }
+
+#settings {
+  display: none;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  font-size: 14px; }
+  #settings tr > td {
+    text-align: right; }
+  #settings td {
+    padding: 3px 0; }
+
+.slider {
+  margin-left: 15px;
+  width: 100px; }
+
+.ui-slider-handle, .ui-widget-content {
+  background-color: white !important;
+  border: 1px solid black !important; }
+
+.emoji {
+  background-image: url("../imgs/apple_emoji.png");
+  width: 22px;
+  height: 22px; }
+
+#okay {
+  -moz-border-radius: 25px;
+  -webkit-border-radius: 25px;
+  -khtml-border-radius: 25px;
+  border-radius: 25px;
+  cursor: pointer;
+  display: block;
+  margin-top: 15px;
+  width: 35px;
+  height: 35px;
+  border: 2px solid black; }
+  #okay .emoji {
+    background-position: -3013px 0;
+    margin: 5px 7px; }
