@@ -20,7 +20,7 @@ class LightBox
   _centerInWindow: ->
     w = $(window)
 
-    verticalOffset = 25  # Looks better a bit higher up...
+    verticalOffset = 35  # Looks better a bit higher up...
 
     @el.css
       left: (w.width() - @el.width()) / 2

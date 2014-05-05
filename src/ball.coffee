@@ -1,8 +1,8 @@
 class Ball
 
-  BOUNCE_FRICTION = -0.9
-  MIN_ATTRACT_DISTANCE = 90
-  ATTRACT_PULL = 0.0003
+  @ATTRACT_DISTANCE: 90
+  @ATTRACT_STRENGTH: 0.0003
+  @BOUNCE_FRICTION: -0.9
 
   constructor: (@x, @y, @vx, @vy, @radius = 10) ->
     @mass = @radius / 10
@@ -14,17 +14,17 @@ class Ball
   checkBoundary: (farX, farY) ->
     if @x - @radius < 0
       @x = @radius
-      @vx *= BOUNCE_FRICTION
+      @vx *= Ball.BOUNCE_FRICTION
     else if @x + @radius > farX
       @x = farX - @radius
-      @vx *= BOUNCE_FRICTION
+      @vx *= Ball.BOUNCE_FRICTION
 
     if @y - @radius < 0
       @y = @radius
-      @vy *= BOUNCE_FRICTION
+      @vy *= Ball.BOUNCE_FRICTION
     else if @y + @radius >= farY
       @y = farY - @radius
-      @vy *= BOUNCE_FRICTION
+      @vy *= Ball.BOUNCE_FRICTION
 
   rotate: (x, y, cos, sin, reverse) ->
     x: if reverse then (x * cos + y * sin) else (x * cos - y * sin)
@@ -82,13 +82,13 @@ class Ball
     dx = other.x - @x
     dy = other.y - @y
     dist = Math.sqrt(dx * dx + dy * dy)
-    return false if dist > MIN_ATTRACT_DISTANCE
+    return false if dist > Ball.ATTRACT_DISTANCE
 
-    ax = dx * ATTRACT_PULL
-    ay = dy * ATTRACT_PULL
+    ax = dx * Ball.ATTRACT_STRENGTH
+    ay = dy * Ball.ATTRACT_STRENGTH
     other.vx -= ax / other.mass
     other.vy -= ay / other.mass
     @vx += ax / @mass
     @vy += ay / @mass
 
-    alpha = 1 - dist / MIN_ATTRACT_DISTANCE
+    alpha = 1 - dist / Ball.ATTRACT_DISTANCE

@@ -5,7 +5,7 @@ html, body {
 
 a:focus {
   outline: 0;
-  /*removes the dotted border*/ }
+  /* Remove dotted borders */ }
 
 canvas {
   cursor: crosshair; }

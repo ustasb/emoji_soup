@@ -7,10 +7,15 @@
   window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
   window.App = (function() {
+    var ATTRACT_EFFECT, BUMP_EFFECT;
+
+    ATTRACT_EFFECT = 0.05;
+
+    BUMP_EFFECT = -0.5;
+
     function App() {
       var _this = this;
       this.lightBox = new LightBox('main-menu');
-      this.lightBox.hide();
       this.canvas = new Canvas('canvas');
       this.emoji = [];
       this.mouse = {
@@ -33,15 +38,58 @@
         return _this.canvas.el.height = w.height();
       });
       w.resize();
-      w.mousedown(function() {
+      $(this.canvas.el).mousedown(function() {
         return _this.mouse.isDown = true;
       });
       w.mouseup(function() {
         return _this.mouse.isDown = false;
       });
-      return w.mousemove(function(e) {
+      w.mousemove(function(e) {
         _this.mouse.x = e.pageX;
         return _this.mouse.y = e.pageY;
+      });
+      return $('#okay').click(function() {
+        _this.lightBox.hide();
+        return _this._enableSettings();
+      });
+    };
+
+    App.prototype._enableSettings = function() {
+      $('#settings').show();
+      $('#attract-distance .slider').slider({
+        value: Ball.ATTRACT_DISTANCE,
+        min: 0,
+        max: 400,
+        slide: function(e, ui) {
+          return Ball.ATTRACT_DISTANCE = ui.value;
+        }
+      });
+      $('#attract-strength .slider').slider({
+        value: Ball.ATTRACT_STRENGTH,
+        min: 0,
+        step: 0.00001,
+        max: 0.001,
+        slide: function(e, ui) {
+          return Ball.ATTRACT_STRENGTH = ui.value;
+        }
+      });
+      $('#attract-effect-emotion .slider').slider({
+        value: ATTRACT_EFFECT,
+        min: 0,
+        step: 0.05,
+        max: 0.3,
+        slide: function(e, ui) {
+          return ATTRACT_EFFECT = ui.value;
+        }
+      });
+      return $('#bump-effect-emotion .slider').slider({
+        value: Math.abs(BUMP_EFFECT),
+        min: 0,
+        step: 0.02,
+        max: 2,
+        slide: function(e, ui) {
+          return BUMP_EFFECT = -ui.value;
+        }
       });
     };
 
@@ -79,14 +127,14 @@
           while (j < len) {
             b = this.emoji[j];
             if (a.checkCollision(b)) {
-              a.emotion.update(-0.5);
-              b.emotion.update(-0.5);
+              a.emotion.update(BUMP_EFFECT);
+              b.emotion.update(BUMP_EFFECT);
             } else {
               if (!(a.emotion.isUnhappy() || b.emotion.isUnhappy())) {
                 if (alpha = a.checkAttraction(b)) {
                   this.drawLineBetweenEmoji(a, b, alpha);
-                  a.emotion.update(0.05);
-                  b.emotion.update(0.05);
+                  a.emotion.update(ATTRACT_EFFECT);
+                  b.emotion.update(ATTRACT_EFFECT);
                 }
               }
             }
@@ -110,13 +158,11 @@
   })();
 
   Ball = (function() {
-    var ATTRACT_PULL, BOUNCE_FRICTION, MIN_ATTRACT_DISTANCE;
+    Ball.ATTRACT_DISTANCE = 90;
 
-    BOUNCE_FRICTION = -0.9;
+    Ball.ATTRACT_STRENGTH = 0.0003;
 
-    MIN_ATTRACT_DISTANCE = 90;
-
-    ATTRACT_PULL = 0.0003;
+    Ball.BOUNCE_FRICTION = -0.9;
 
     function Ball(x, y, vx, vy, radius) {
       this.x = x;
@@ -135,17 +181,17 @@
     Ball.prototype.checkBoundary = function(farX, farY) {
       if (this.x - this.radius < 0) {
         this.x = this.radius;
-        this.vx *= BOUNCE_FRICTION;
+        this.vx *= Ball.BOUNCE_FRICTION;
       } else if (this.x + this.radius > farX) {
         this.x = farX - this.radius;
-        this.vx *= BOUNCE_FRICTION;
+        this.vx *= Ball.BOUNCE_FRICTION;
       }
       if (this.y - this.radius < 0) {
         this.y = this.radius;
-        return this.vy *= BOUNCE_FRICTION;
+        return this.vy *= Ball.BOUNCE_FRICTION;
       } else if (this.y + this.radius >= farY) {
         this.y = farY - this.radius;
-        return this.vy *= BOUNCE_FRICTION;
+        return this.vy *= Ball.BOUNCE_FRICTION;
       }
     };
 
@@ -201,16 +247,16 @@
       dx = other.x - this.x;
       dy = other.y - this.y;
       dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist > MIN_ATTRACT_DISTANCE) {
+      if (dist > Ball.ATTRACT_DISTANCE) {
         return false;
       }
-      ax = dx * ATTRACT_PULL;
-      ay = dy * ATTRACT_PULL;
+      ax = dx * Ball.ATTRACT_STRENGTH;
+      ay = dy * Ball.ATTRACT_STRENGTH;
       other.vx -= ax / other.mass;
       other.vy -= ay / other.mass;
       this.vx += ax / this.mass;
       this.vy += ay / this.mass;
-      return alpha = 1 - dist / MIN_ATTRACT_DISTANCE;
+      return alpha = 1 - dist / Ball.ATTRACT_DISTANCE;
     };
 
     return Ball;
@@ -361,7 +407,7 @@
     LightBox.prototype._centerInWindow = function() {
       var verticalOffset, w;
       w = $(window);
-      verticalOffset = 25;
+      verticalOffset = 35;
       return this.el.css({
         left: (w.width() - this.el.width()) / 2,
         top: (w.height() - this.el.height()) / 2 - verticalOffset

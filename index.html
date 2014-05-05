@@ -5,16 +5,51 @@
   <meta charset="utf-8">
   <link rel="shortcut icon" href="imgs/favicon.ico" />
   <link type="text/css" rel="stylesheet" href="vendor/pure-0.4.2.min.css">
-  <link type="text/css" rel="stylesheet" href="css/application.css">
+  <link type="text/css" rel="stylesheet" href="vendor/jquery-ui-1.10.4.custom.min.css">
+  <link type="text/css" rel="stylesheet" href="dist/application.css">
+  <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Handlee">
 </head>
 <body>
+  <div id="settings">
+    <table>
+      <tr id="attract-distance">
+        <td>Attract Distance</td>
+        <td><div class="slider"></div></td>
+      </tr>
+      <tr id="attract-strength">
+        <td>Attract Strength</td>
+        <td><div class="slider"></div></td>
+      </tr>
+      <tr id="attract-effect-emotion">
+        <td>Attract Effect on Emotion</td>
+        <td><div class="slider"></div></td>
+      </tr>
+      <tr id="bump-effect-emotion">
+        <td>Bump Effect on Emotion</td>
+        <td><div class="slider"></div></td>
+      </tr>
+    </table>
+  </div>
+
   <div id="main-menu" class="light-box">
     <h1>Emoji Soup</h1>
+
+    <ul>
+      <li>Happy emoji attract other happy emoji</li>
+      <li>Emoji become happier when together</li>
+      <li>Emoji become angrier when bumped into</li>
+      <li>When alone, emoji gravitate towards a neutral emotion</li>
+    </ul>
+
+    <div id="okay">
+      <div class="emoji"></div>
+    </div>
   </div>
 
   <canvas id="canvas">Upgrade your browser!</canvas>
 
   <script src="vendor/jquery-2.1.0.min.js"></script>
+  <script src="vendor/jquery-ui-1.10.4.custom.min.js"></script>
   <script src="dist/application.js"></script>
   <script> new App(); </script>
 </body>
