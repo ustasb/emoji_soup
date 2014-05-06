@@ -7,7 +7,7 @@
   window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
   window.App = (function() {
-    var ACTIVE_CONTAINER, ACTIVE_EMOJI_CLASS, ATTRACT_EFFECT, BUMP_EFFECT, GROWTH_RATE, HALT;
+    var ACTIVE_CONTAINER, ACTIVE_EMOJI_CLASS, ATTRACT_EFFECT, BUMP_EFFECT, GROWTH_RATE, HALT, INIT_EMOJI_COUNT;
 
     ACTIVE_EMOJI_CLASS = null;
 
@@ -20,6 +20,8 @@
     GROWTH_RATE = 0.2;
 
     HALT = false;
+
+    INIT_EMOJI_COUNT = 50;
 
     function App() {
       var _this = this;
@@ -34,6 +36,7 @@
       this.food = [];
       this._initEvents();
       Emoji.loadSpriteSheet(function() {
+        _this.generateScene(INIT_EMOJI_COUNT);
         return _this.run();
       });
     }
@@ -124,6 +127,15 @@
       this.canvas.ctx.lineTo(b.x, b.y);
       this.canvas.ctx.stroke();
       return this.canvas.ctx.closePath();
+    };
+
+    App.prototype.generateScene = function(emoji_count) {
+      var _results;
+      _results = [];
+      while (emoji_count--) {
+        _results.push(this.createEmojiAt(Emotional, this.emotionals, Math.random() * this.canvas.el.width, Math.random() * this.canvas.el.height));
+      }
+      return _results;
     };
 
     App.prototype.updateEmotionals = function() {
@@ -444,11 +456,6 @@
 
     function Emotion(value) {
       this.value = value != null ? value : NEUTRAL_EMOTION;
-      if (value === 'happy') {
-        this.value = MAX_EMOTION;
-      } else if (value === 'angry') {
-        this.value = MIN_EMOTION;
-      }
     }
 
     Emotion.prototype.update = function(amount) {

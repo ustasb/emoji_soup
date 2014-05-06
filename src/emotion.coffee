@@ -5,10 +5,6 @@ class Emotion
   NEUTRAL_EMOTION = MAX_EMOTION / 2
 
   constructor: (@value = NEUTRAL_EMOTION) ->
-    if value is 'happy'
-      @value = MAX_EMOTION
-    else if value is 'angry'
-      @value = MIN_EMOTION
 
   # Higher is happier
   update: (amount) ->

@@ -12,6 +12,7 @@ class window.App
   BUMP_EFFECT = -0.5
   GROWTH_RATE = 0.2
   HALT = false
+  INIT_EMOJI_COUNT = 50
 
   constructor: ->
     @lightBox = new LightBox('main-menu')
@@ -26,7 +27,9 @@ class window.App
     @food = []
 
     @_initEvents()
-    Emoji.loadSpriteSheet => @run()
+    Emoji.loadSpriteSheet =>
+      @generateScene(INIT_EMOJI_COUNT)
+      @run()
 
   _initEvents: ->
     w = $(window)
@@ -101,6 +104,14 @@ class window.App
     @canvas.ctx.lineTo(b.x, b.y)
     @canvas.ctx.stroke()
     @canvas.ctx.closePath()
+
+  generateScene: (emoji_count) ->
+    @createEmojiAt(
+      Emotional,
+      @emotionals,
+      Math.random() * @canvas.el.width,
+      Math.random() * @canvas.el.height,
+    ) while emoji_count--
 
   updateEmotionals: ->
     i = 0
