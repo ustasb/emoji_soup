@@ -82,6 +82,10 @@ ul {
   border: 1px solid black !important;
 }
 
+.ui-widget-content {
+  background-color: transparent !important;
+}
+
 .emoji-button {
   @include border-radius(25px);
   cursor: pointer;
@@ -89,7 +93,7 @@ ul {
   margin-top: 15px;
   width: 36px;
   height: 36px;
-  border: 2px solid white;
+  border: 2px solid transparent;
 
   .emoji {
     background-image: url('../imgs/apple_emoji.png');
