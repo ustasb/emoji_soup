@@ -55,6 +55,13 @@ ul {
     text-align: right;
     padding: 3px 0; }
 
+#facebook-like-button {
+  position: absolute;
+  top: 15px;
+  right: 0;
+  width: 90px;
+  overflow: hidden; }
+
 .slider {
   margin-left: 15px;
   width: 100px; }
@@ -99,3 +106,5 @@ ul {
 
 #food .emoji {
   background-position: -17637px 0; }
+
+/*# sourceMappingURL=application.css.map */
