@@ -1,15 +1,27 @@
 # Emoji Soup
 
-[ustasb.com/emojisoup][1]
+[ustasb.com/emojisoup](http://ustasb.com/emojisoup)
 
 A bunch of interacting, emotional emoji...
 
+## Usage
+
+First, build the Docker image:
+
+    docker build -t emoji_soup .
+
+Compile SASS and CoffeeScript with:
+
+    ./recompile_assets.sh
+
 ## Development
 
-Run `rake -T` for task descriptions.
+To recompile assets when files change:
 
-This project relies on [Sass][2] and [CoffeeScript][3].
+    fswatch -o src css | xargs -n1 -I{} ./recompile_assets.sh
 
-[1]: http://ustasb.com/emojisoup
-[2]: http://sass-lang.com/
-[3]: http://coffeescript.org/
+To serve assets via a local server:
+
+    python -m SimpleHTTPServer
+
+Navigate to `http://localhost:8000` in your browser.

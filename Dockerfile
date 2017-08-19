@@ -1,12 +1,20 @@
-FROM ubuntu:14.04
+FROM ruby:2.4.1-alpine3.6
 MAINTAINER Brian Ustas <brianustas@gmail.com>
 
-RUN apt-get -y update && \
-    apt-get -y install git
+ARG APP_PATH="/srv/www/emoji_soup"
 
-RUN git clone https://github.com/ustasb/emoji_soup.git /srv/www/emoji_soup && \
-    rm -rf /srv/www/emoji_soup/.git
+RUN apk add --update \
+  nodejs \
+  nodejs-npm \
+  build-base \
+  && rm -rf /var/cache/apk/*
 
-WORKDIR /srv/www/emoji_soup
+# CoffeeScript
+RUN npm install -g coffeescript@1.6.3
 
-VOLUME /srv/www/emoji_soup
+# Sass
+RUN gem install sass -v 3.5.1 --no-user-install
+
+WORKDIR $APP_PATH
+COPY . $APP_PATH
+VOLUME $APP_PATH
