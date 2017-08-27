@@ -1,8 +1,10 @@
 # Emoji Soup
 
-[ustasb.com/emojisoup](http://ustasb.com/emojisoup)
+[ustasb.com/emoji-soup](http://ustasb.com/emoji-soup)
 
 A bunch of interacting, emotional emoji...
+
+Initial release: 05/08/14
 
 ## Usage
 
@@ -12,16 +14,22 @@ First, build the Docker image:
 
 Compile SASS and CoffeeScript with:
 
-    ./recompile_assets.sh
+    rake docker_build_dist
 
-## Development
+    # To recompile assets when files change (uses fswatch):
 
-To recompile assets when files change:
+    rake docker_build_dist_and_watch
 
-    fswatch -o src css | xargs -n1 -I{} ./recompile_assets.sh
+Serve assets via a local server:
 
-To serve assets via a local server:
-
-    python -m SimpleHTTPServer
+    cd src && python -m SimpleHTTPServer
 
 Navigate to `http://localhost:8000` in your browser.
+
+## Production
+
+To build the `public/` folder:
+
+    rake docker_build_public
+
+Open `public/index.html`.
