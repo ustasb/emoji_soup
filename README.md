@@ -1,6 +1,6 @@
 # Emoji Soup
 
-[ustasb.com/emoji-soup](http://ustasb.com/emoji-soup)
+[brianustas.com/emoji-soup](http://brianustas.com/emoji-soup)
 
 A bunch of interacting, emotional emoji...
 
