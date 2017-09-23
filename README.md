@@ -1,6 +1,6 @@
 # Emoji Soup
 
-- [brianustas.com/emoji-soup](http://brianustas.com/emoji-soup/)
+- [brianustas.com/emoji-soup/](http://brianustas.com/emoji-soup/)
 - Initial release: 05/08/14
 - Author: [Brian Ustas](http://brianustas.com)
 
