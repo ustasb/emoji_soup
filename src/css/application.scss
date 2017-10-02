@@ -55,6 +55,7 @@ ul {
   @extend .container;
   width: 410px;
   padding: 10px 20px;
+  display: none; // start hidden
 }
 
 #settings {
